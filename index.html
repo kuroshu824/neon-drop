@@ -1,124 +1,207 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
+
 <meta charset="UTF-8">
 
-<meta name="viewport"
-content="width=device-width,
-initial-scale=1,
-maximum-scale=1,
-user-scalable=no">
+<meta
+  name="viewport"
+  content="width=device-width,
+  initial-scale=1,
+  maximum-scale=1,
+  user-scalable=no"
+>
 
-<meta name="theme-color" content="#070914">
+<meta
+  name="theme-color"
+  content="#070914"
+>
 
-<title>NEON DROP v5</title>
+<title>NEON DROP v6</title>
+
 
 <style>
+
+/* =========================
+   BASE
+========================= */
 
 *{
   box-sizing:border-box;
 }
 
-html,body{
+html,
+body{
+
   margin:0;
+
   width:100%;
   height:100%;
+
   overflow:hidden;
+
   background:#070914;
+
   color:white;
+
   font-family:
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
+
 }
 
 body{
+
   touch-action:manipulation;
+
 }
+
+
+/* =========================
+   APP
+========================= */
 
 #app{
+
   width:100%;
   height:100%;
+
   display:flex;
+
   flex-direction:column;
+
   align-items:center;
+
 }
 
-/* HEADER */
+
+/* =========================
+   HEADER
+========================= */
 
 header{
+
   width:min(94vw,480px);
+
   height:70px;
 
   display:flex;
+
   align-items:center;
+
   justify-content:space-between;
+
 }
+
 
 .title{
+
   font-size:21px;
+
   font-weight:900;
+
   letter-spacing:3px;
+
 }
+
 
 .scoreBox{
+
   text-align:right;
+
 }
+
 
 .label{
+
   font-size:10px;
+
   color:#8e98c2;
+
   letter-spacing:1px;
+
 }
+
 
 #score{
+
   font-size:25px;
+
   font-weight:900;
+
 }
 
-/* GAME */
+
+/* =========================
+   GAME
+========================= */
 
 #game{
+
   position:relative;
 
   width:min(94vw,480px);
+
   height:min(79vh,690px);
 
   border:1px solid #303653;
+
   border-radius:22px;
 
   background:#0a0e20;
 
   box-shadow:
-    0 12px 40px rgba(0,0,0,.5);
+    0 12px 40px
+    rgba(0,0,0,.5);
 
   overflow:hidden;
+
 }
 
-/* GAUGE */
+
+/* =========================
+   GAUGE
+========================= */
 
 #meterArea{
+
   position:absolute;
 
   top:10px;
+
   left:14px;
+
   right:14px;
 
   height:40px;
 
   z-index:20;
+
 }
+
 
 #meterLabel{
+
   font-size:10px;
+
   color:#9fa9ce;
+
   font-weight:800;
+
   letter-spacing:1px;
+
   margin-bottom:4px;
+
 }
 
+
 #meter{
+
+  width:100%;
+
   height:12px;
 
   background:#171d35;
@@ -128,10 +211,14 @@ header{
   border-radius:999px;
 
   overflow:hidden;
+
 }
 
+
 #meterFill{
+
   width:100%;
+
   height:100%;
 
   background:
@@ -142,10 +229,14 @@ header{
       #ff4f9a
     );
 
-  transition:width .08s linear;
+  transition:
+    width .08s linear;
+
 }
 
+
 #meter.danger #meterFill{
+
   background:#ff3f67;
 
   box-shadow:
@@ -153,29 +244,41 @@ header{
 
   animation:
     danger .4s infinite alternate;
+
 }
+
 
 @keyframes danger{
 
   from{
+
     filter:brightness(1);
+
   }
 
   to{
+
     filter:brightness(1.8);
+
   }
 
 }
 
-/* GRID */
+
+/* =========================
+   GRID
+========================= */
 
 #grid{
+
   position:absolute;
 
   left:10px;
+
   right:10px;
 
   top:62px;
+
   bottom:10px;
 
   display:grid;
@@ -187,11 +290,14 @@ header{
     repeat(10,1fr);
 
   gap:6px;
+
 }
+
 
 .cell{
 
   min-width:0;
+
   min-height:0;
 
   border-radius:9px;
@@ -203,7 +309,9 @@ header{
 
   transition:
     transform .08s;
+
 }
+
 
 .cell.filled{
 
@@ -216,24 +324,34 @@ header{
     0 0 13px var(--color),
     inset 0 0 9px
     rgba(255,255,255,.3);
+
 }
+
 
 .cell.pulse{
 
   animation:
     pulse .16s ease;
+
 }
+
 
 @keyframes pulse{
 
   50%{
+
     transform:scale(1.2);
+
     filter:brightness(1.8);
+
   }
 
 }
 
-/* COMBO */
+
+/* =========================
+   COMBO
+========================= */
 
 #combo{
 
@@ -242,6 +360,7 @@ header{
   top:67px;
 
   left:0;
+
   right:0;
 
   text-align:center;
@@ -256,15 +375,20 @@ header{
   pointer-events:none;
 
   z-index:10;
+
 }
 
-/* MESSAGE */
+
+/* =========================
+   MESSAGE
+========================= */
 
 #message{
 
   position:absolute;
 
   left:0;
+
   right:0;
 
   bottom:15px;
@@ -278,9 +402,13 @@ header{
   pointer-events:none;
 
   z-index:10;
+
 }
 
-/* EVENT */
+
+/* =========================
+   EVENT
+========================= */
 
 #event{
 
@@ -289,6 +417,7 @@ header{
   top:38%;
 
   left:5%;
+
   right:5%;
 
   text-align:center;
@@ -308,39 +437,58 @@ header{
   pointer-events:none;
 
   z-index:50;
+
 }
+
 
 #event.show{
 
   animation:
     eventPop 1.5s ease;
+
 }
+
 
 @keyframes eventPop{
 
   0%{
+
     opacity:0;
+
     transform:scale(.5);
+
   }
 
   20%{
+
     opacity:1;
+
     transform:scale(1.15);
+
   }
 
   70%{
+
     opacity:1;
+
     transform:scale(1);
+
   }
 
   100%{
+
     opacity:0;
+
     transform:scale(1.2);
+
   }
 
 }
 
-/* OVERLAY */
+
+/* =========================
+   OVERLAY
+========================= */
 
 #overlay{
 
@@ -364,7 +512,9 @@ header{
   text-align:center;
 
   padding:20px;
+
 }
+
 
 #overlay h1{
 
@@ -376,14 +526,22 @@ header{
 
   margin:
     0 0 18px;
+
 }
+
 
 #overlay p{
 
   color:#aeb7dc;
 
   margin:5px;
+
 }
+
+
+/* =========================
+   LEVEL BUTTONS
+========================= */
 
 .levels{
 
@@ -397,7 +555,9 @@ header{
   width:min(90%,330px);
 
   margin-top:18px;
+
 }
+
 
 .levelButton{
 
@@ -417,7 +577,12 @@ header{
   font-size:14px;
 
   cursor:pointer;
+
+  -webkit-tap-highlight-color:
+    transparent;
+
 }
+
 
 .levelButton small{
 
@@ -428,15 +593,21 @@ header{
   color:#aeb7dc;
 
   font-weight:500;
+
 }
+
 
 .levelButton:active{
 
   transform:
     scale(.95);
+
 }
 
-/* FOOTER */
+
+/* =========================
+   FOOTER
+========================= */
 
 footer{
 
@@ -453,7 +624,9 @@ footer{
   color:#9ca6ca;
 
   font-size:12px;
+
 }
+
 
 .badge{
 
@@ -465,20 +638,26 @@ footer{
   border-radius:999px;
 
   padding:8px 12px;
+
 }
 
 </style>
+
 </head>
+
 
 <body>
 
+
 <div id="app">
+
 
 <header>
 
   <div class="title">
     NEON DROP
   </div>
+
 
   <div class="scoreBox">
 
@@ -495,7 +674,9 @@ footer{
 </header>
 
 
+
 <div id="game">
+
 
   <!-- ゲージ -->
 
@@ -504,6 +685,7 @@ footer{
     <div id="meterLabel">
       TIME GAUGE
     </div>
+
 
     <div id="meter">
 
@@ -514,9 +696,11 @@ footer{
   </div>
 
 
-  <!-- 盤面 -->
+
+  <!-- ゲーム盤 -->
 
   <div id="grid"></div>
+
 
 
   <!-- コンボ -->
@@ -524,17 +708,20 @@ footer{
   <div id="combo"></div>
 
 
+
   <!-- メッセージ -->
 
   <div id="message"></div>
 
 
-  <!-- イベント表示 -->
+
+  <!-- イベント -->
 
   <div id="event"></div>
 
 
-  <!-- スタート -->
+
+  <!-- スタート画面 -->
 
   <div id="overlay">
 
@@ -543,15 +730,19 @@ footer{
       DROP
     </h1>
 
+
     <p>
       レベルを選んでスタート
     </p>
 
+
     <div class="levels">
+
 
       <button
         class="levelButton"
-        data-level="1">
+        data-level="1"
+      >
 
         LEVEL 1
 
@@ -562,9 +753,11 @@ footer{
       </button>
 
 
+
       <button
         class="levelButton"
-        data-level="2">
+        data-level="2"
+      >
 
         LEVEL 2
 
@@ -575,9 +768,11 @@ footer{
       </button>
 
 
+
       <button
         class="levelButton"
-        data-level="3">
+        data-level="3"
+      >
 
         LEVEL 3
 
@@ -587,32 +782,47 @@ footer{
 
       </button>
 
+
     </div>
 
   </div>
 
+
 </div>
+
 
 
 <footer>
 
+
   <div class="badge">
 
     🏆 BEST
-    <b id="best">0</b>
+
+    <b id="best">
+      0
+    </b>
 
   </div>
+
+
 
   <div id="levelText">
     LEVEL -
   </div>
 
+
+
   <div class="badge">
 
     🪙
-    <b id="coins">0</b>
+
+    <b id="coins">
+      0
+    </b>
 
   </div>
+
 
 </footer>
 
@@ -620,9 +830,9 @@ footer{
 <script>
 
 /* ==================================================
-   NEON DROP v5
+   NEON DROP v6
 
-   カメラ・マイクは使用しません。
+   カメラ・マイクは使用していません。
 ================================================== */
 
 "use strict";
@@ -632,47 +842,54 @@ footer{
    SETTINGS
 ========================= */
 
-const COLS = 6;
-const ROWS = 10;
+const COLS=6;
 
-const COLORS = [
+const ROWS=10;
+
+
+const COLORS=[
 
   "#27d9ff",
+
   "#8b5cf6",
+
   "#ff4f9a",
+
   "#ffb52e",
+
   "#45ef8b"
 
 ];
 
 
 /*
-  v5では
-  LEVEL 1から難易度を上げています。
+  ゲージ減少速度
+
+  v5より速くしています。
 */
 
-const LEVELS = {
+const LEVELS={
 
   1:{
     name:"LEVEL 1",
-    speed:0.010
+    speed:0.013
   },
 
   2:{
     name:"LEVEL 2",
-    speed:0.014
+    speed:0.018
   },
 
   3:{
     name:"LEVEL 3",
-    speed:0.020
+    speed:0.025
   }
 
 };
 
 
 /* =========================
-   GAME VARIABLES
+   GAME STATE
 ========================= */
 
 let board=[];
@@ -714,6 +931,7 @@ let best=
     ) || 0
   );
 
+
 let coins=
   Number(
     localStorage.getItem(
@@ -731,50 +949,60 @@ const grid=
     "grid"
   );
 
+
 const scoreElement=
   document.getElementById(
     "score"
   );
+
 
 const bestElement=
   document.getElementById(
     "best"
   );
 
+
 const coinsElement=
   document.getElementById(
     "coins"
   );
+
 
 const comboElement=
   document.getElementById(
     "combo"
   );
 
+
 const meterElement=
   document.getElementById(
     "meter"
   );
+
 
 const meterFill=
   document.getElementById(
     "meterFill"
   );
 
+
 const messageElement=
   document.getElementById(
     "message"
   );
+
 
 const eventElement=
   document.getElementById(
     "event"
   );
 
+
 const overlay=
   document.getElementById(
     "overlay"
   );
+
 
 const levelText=
   document.getElementById(
@@ -791,7 +1019,9 @@ const cells=[];
 
 for(
   let i=0;
+
   i<COLS*ROWS;
+
   i++
 ){
 
@@ -800,15 +1030,19 @@ for(
       "div"
     );
 
+
   cell.className=
     "cell";
+
 
   cell.dataset.index=
     i;
 
+
   grid.appendChild(
     cell
   );
+
 
   cells.push(
     cell
@@ -838,34 +1072,37 @@ function setupLevelButtons(){
     .querySelectorAll(
       ".levelButton"
     )
-    .forEach(button=>{
+    .forEach(
+      button=>{
 
-      button.onclick=()=>{
+        button.onclick=()=>{
 
-        startGame(
-          Number(
-            button.dataset.level
-          )
-        );
+          startGame(
+            Number(
+              button.dataset.level
+            )
+          );
 
-      };
+        };
 
-    });
+      }
+    );
 
 }
+
 
 setupLevelButtons();
 
 
 /* =========================
-   RANDOM
+   RANDOM COLOR
 ========================= */
 
 function randomColor(){
 
   return Math.floor(
-    Math.random()
-    * COLORS.length
+    Math.random()*
+    COLORS.length
   );
 
 }
@@ -886,6 +1123,7 @@ function createBoard(){
       randomColor
     );
 
+
   render();
 
 }
@@ -899,12 +1137,15 @@ function render(){
 
   for(
     let i=0;
+
     i<board.length;
+
     i++
   ){
 
     const cell=
       cells[i];
+
 
     cell.className=
       "cell";
@@ -917,6 +1158,7 @@ function render(){
       cell.classList.add(
         "filled"
       );
+
 
       cell.style.setProperty(
         "--color",
@@ -933,8 +1175,10 @@ function render(){
   scoreElement.textContent=
     score;
 
+
   bestElement.textContent=
     best;
+
 
   coinsElement.textContent=
     coins;
@@ -974,33 +1218,58 @@ function getNeighbors(index){
   const x=
     index%COLS;
 
+
   const y=
     Math.floor(
       index/COLS
     );
 
+
   const result=[];
 
 
-  if(x>0)
+  if(
+    x>0
+  ){
+
     result.push(
       index-1
     );
 
-  if(x<COLS-1)
+  }
+
+
+  if(
+    x<COLS-1
+  ){
+
     result.push(
       index+1
     );
 
-  if(y>0)
+  }
+
+
+  if(
+    y>0
+  ){
+
     result.push(
       index-COLS
     );
 
-  if(y<ROWS-1)
+  }
+
+
+  if(
+    y<ROWS-1
+  ){
+
     result.push(
       index+COLS
     );
+
+  }
 
 
   return result;
@@ -1026,10 +1295,12 @@ function getGroup(start){
   const color=
     board[start];
 
+
   const seen=
     new Set([
       start
     ]);
+
 
   const queue=[
     start
@@ -1038,7 +1309,9 @@ function getGroup(start){
 
   for(
     let i=0;
+
     i<queue.length;
+
     i++
   ){
 
@@ -1049,8 +1322,7 @@ function getGroup(start){
 
 
     for(
-      const next
-      of neighbors
+      const next of neighbors
     ){
 
       if(
@@ -1075,7 +1347,7 @@ function getGroup(start){
 
 
 /* =========================
-   EVENT
+   EVENT DISPLAY
 ========================= */
 
 function showEvent(
@@ -1086,11 +1358,14 @@ function showEvent(
   eventElement.textContent=
     title;
 
+
   eventElement.classList.remove(
     "show"
   );
 
+
   void eventElement.offsetWidth;
+
 
   eventElement.classList.add(
     "show"
@@ -1115,19 +1390,20 @@ function showEvent(
 
 function checkScoreEvents(){
 
+
   /*
-    500
+    1,000
   */
 
   if(
-    totalScore>=500 &&
-    totalScore-500<
-    score
+    totalScore>=1000&&
+    totalScore-score<1000
   ){
 
     showEvent(
-      "🎉 FIRST BONUS!"
+      "🎉 BONUS!"
     );
+
 
     gauge=
       Math.min(
@@ -1135,18 +1411,20 @@ function checkScoreEvents(){
         gauge+25
       );
 
-    coins+=10;
+
+    coins+=15;
 
   }
 
 
+
   /*
-    1500
+    3,000
   */
 
   if(
-    totalScore>=1500 &&
-    totalScore-score<1500 &&
+    totalScore>=3000&&
+    totalScore-score<3000&&
     !fever
   ){
 
@@ -1155,31 +1433,34 @@ function checkScoreEvents(){
   }
 
 
+
   /*
-    3000
+    6,000
   */
 
   if(
-    totalScore>=3000 &&
-    totalScore-score<3000
+    totalScore>=6000&&
+    totalScore-score<6000
   ){
 
     showEvent(
       "💎 COIN RUSH!"
     );
 
-    coins+=30;
+
+    coins+=40;
 
   }
 
 
+
   /*
-    5000
+    10,000
   */
 
   if(
-    totalScore>=5000 &&
-    totalScore-score<5000 &&
+    totalScore>=10000&&
+    totalScore-score<10000&&
     !rainbow
   ){
 
@@ -1188,36 +1469,49 @@ function checkScoreEvents(){
   }
 
 
+
   /*
-    10000
+    20,000
   */
 
   if(
-    totalScore>=10000 &&
-    totalScore-score<10000
+    totalScore>=20000&&
+    totalScore-score<20000
   ){
 
     showEvent(
       "👑 NEON MASTER!"
     );
 
+
     gauge=100;
+
 
     coins+=100;
 
   }
 
 
+
   /*
-    20000
+    35,000
   */
 
   if(
-    totalScore>=20000 &&
-    totalScore-score<20000
+    totalScore>=35000&&
+    totalScore-score<35000
   ){
 
+    showEvent(
+      "🔥 ULTIMATE!"
+    );
+
+
     startFever();
+
+
+    gauge=100;
+
 
     coins+=200;
 
@@ -1243,6 +1537,7 @@ function startFever(){
 
   fever=true;
 
+
   showEvent(
     "⚡ FEVER TIME!"
   );
@@ -1261,9 +1556,12 @@ function startFever(){
 
   setTimeout(
     ()=>{
+
       fever=false;
+
       messageElement.textContent=
         "";
+
     },
     7000
   );
@@ -1288,6 +1586,7 @@ function startRainbow(){
 
   rainbow=true;
 
+
   showEvent(
     "🌈 RAINBOW EVENT!"
   );
@@ -1298,7 +1597,9 @@ function startRainbow(){
 
   setTimeout(
     ()=>{
+
       rainbow=false;
+
     },
     5000
   );
@@ -1307,7 +1608,7 @@ function startRainbow(){
 
 
 /* =========================
-   TAP
+   TAP CELL
 ========================= */
 
 function tapCell(index){
@@ -1327,7 +1628,7 @@ function tapCell(index){
 
 
   /*
-    1個でも消せる
+    1個だけでも消せる
   */
 
   if(
@@ -1346,7 +1647,7 @@ function tapCell(index){
 
 
   /*
-    コンボ倍率
+    基本倍率
   */
 
   let multiplier=
@@ -1404,6 +1705,7 @@ function tapCell(index){
 
   score+=gain;
 
+
   totalScore+=gain;
 
 
@@ -1434,7 +1736,7 @@ function tapCell(index){
 
 
   /*
-    コンボ表示
+    コンボ
   */
 
   comboElement.textContent=
@@ -1450,7 +1752,7 @@ function tapCell(index){
 
 
   /*
-    消す
+    ブロック消去
   */
 
   group.forEach(
@@ -1458,6 +1760,7 @@ function tapCell(index){
 
       board[index]=
         null;
+
 
       cells[index]
         .classList.add(
@@ -1483,6 +1786,7 @@ function tapCell(index){
     "neon_total_score",
     String(totalScore)
   );
+
 
   localStorage.setItem(
     "neon_coins",
@@ -1513,14 +1817,16 @@ function tapCell(index){
 
 
 /* =========================
-   DROP
+   DROP BLOCKS
 ========================= */
 
 function dropBlocks(){
 
   for(
     let x=0;
+
     x<COLS;
+
     x++
   ){
 
@@ -1529,7 +1835,9 @@ function dropBlocks(){
 
     for(
       let y=ROWS-1;
+
       y>=0;
+
       y--
     ){
 
@@ -1554,7 +1862,9 @@ function dropBlocks(){
 
     for(
       let y=ROWS-1;
+
       y>=0;
+
       y--
     ){
 
@@ -1595,13 +1905,17 @@ function refillBlocks(){
 
   for(
     let x=0;
+
     x<COLS;
+
     x++
   ){
 
     for(
       let y=0;
+
       y<ROWS;
+
       y++
     ){
 
@@ -1626,7 +1940,7 @@ function refillBlocks(){
 
 
 /* =========================
-   START
+   START GAME
 ========================= */
 
 function startGame(
@@ -1636,25 +1950,34 @@ function startGame(
   level=
     selectedLevel;
 
+
   score=0;
+
 
   combo=0;
 
+
   gauge=100;
+
 
   running=true;
 
+
   busy=false;
+
 
   fever=false;
 
+
   rainbow=false;
+
 
   lastTime=0;
 
 
   comboElement.textContent=
     "";
+
 
   messageElement.textContent=
     LEVELS[level].name+
@@ -1678,11 +2001,15 @@ function gameOver(){
 
   running=false;
 
+
   busy=false;
+
 
   fever=false;
 
+
   rainbow=false;
+
 
   gauge=0;
 
@@ -1696,6 +2023,7 @@ function gameOver(){
   ){
 
     best=score;
+
 
     localStorage.setItem(
       "neon_best",
@@ -1718,7 +2046,7 @@ function gameOver(){
 
 
   /*
-    ゲームオーバー画面
+    GAME OVER
   */
 
   overlay.innerHTML=`
@@ -1728,9 +2056,11 @@ function gameOver(){
       UP
     </h1>
 
+
     <p>
       ${LEVELS[level].name}
     </p>
+
 
     <p>
       SCORE　
@@ -1739,12 +2069,14 @@ function gameOver(){
       </b>
     </p>
 
+
     <p>
       BEST　
       <b>
         ${best}
       </b>
     </p>
+
 
     <p>
       TOTAL　
@@ -1753,11 +2085,14 @@ function gameOver(){
       </b>
     </p>
 
+
     <div class="levels">
+
 
       <button
         class="levelButton"
-        data-level="1">
+        data-level="1"
+      >
 
         LEVEL 1
 
@@ -1768,9 +2103,11 @@ function gameOver(){
       </button>
 
 
+
       <button
         class="levelButton"
-        data-level="2">
+        data-level="2"
+      >
 
         LEVEL 2
 
@@ -1781,9 +2118,11 @@ function gameOver(){
       </button>
 
 
+
       <button
         class="levelButton"
-        data-level="3">
+        data-level="3"
+      >
 
         LEVEL 3
 
@@ -1792,6 +2131,7 @@ function gameOver(){
         </small>
 
       </button>
+
 
     </div>
 
@@ -1835,18 +2175,22 @@ function gameLoop(time){
 
 
   if(
-    running &&
+    running&&
     !busy
   ){
 
     /*
-      FEVER中は
-      ゲージ減少を半分にする
+      基本速度
     */
 
     let drain=
       LEVELS[level].speed;
 
+
+    /*
+      FEVER中は
+      ゲージ減少半分
+    */
 
     if(
       fever
@@ -1871,13 +2215,17 @@ function gameLoop(time){
 
       gauge=0;
 
+
       render();
 
+
       gameOver();
+
 
       requestAnimationFrame(
         gameLoop
       );
+
 
       return;
 
@@ -1903,10 +2251,13 @@ function gameLoop(time){
 bestElement.textContent=
   best;
 
+
 coinsElement.textContent=
   coins;
 
+
 render();
+
 
 requestAnimationFrame(
   gameLoop
@@ -1914,5 +2265,7 @@ requestAnimationFrame(
 
 </script>
 
+
 </body>
+
 </html>
