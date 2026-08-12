@@ -11,7 +11,7 @@ user-scalable=no">
 
 <meta name="theme-color" content="#070914">
 
-<title>NEON DROP</title>
+<title>NEON DROP v5</title>
 
 <style>
 
@@ -19,8 +19,7 @@ user-scalable=no">
   box-sizing:border-box;
 }
 
-html,
-body{
+html,body{
   margin:0;
   width:100%;
   height:100%;
@@ -46,9 +45,7 @@ body{
   align-items:center;
 }
 
-/* =========================
-   HEADER
-========================= */
+/* HEADER */
 
 header{
   width:min(94vw,480px);
@@ -80,9 +77,7 @@ header{
   font-weight:900;
 }
 
-/* =========================
-   GAME
-========================= */
+/* GAME */
 
 #game{
   position:relative;
@@ -101,12 +96,9 @@ header{
   overflow:hidden;
 }
 
-/* =========================
-   TIME GAUGE
-========================= */
+/* GAUGE */
 
 #meterArea{
-
   position:absolute;
 
   top:10px;
@@ -119,21 +111,14 @@ header{
 }
 
 #meterLabel{
-
   font-size:10px;
-
   color:#9fa9ce;
-
   font-weight:800;
-
   letter-spacing:1px;
-
   margin-bottom:4px;
 }
 
 #meter{
-
-  width:100%;
   height:12px;
 
   background:#171d35;
@@ -146,7 +131,6 @@ header{
 }
 
 #meterFill{
-
   width:100%;
   height:100%;
 
@@ -158,19 +142,17 @@ header{
       #ff4f9a
     );
 
-  transition:
-    width .08s linear;
+  transition:width .08s linear;
 }
 
 #meter.danger #meterFill{
-
   background:#ff3f67;
 
   box-shadow:
-    0 0 12px #ff3f67;
+    0 0 14px #ff3f67;
 
   animation:
-    danger .45s infinite alternate;
+    danger .4s infinite alternate;
 }
 
 @keyframes danger{
@@ -185,12 +167,9 @@ header{
 
 }
 
-/* =========================
-   GRID
-========================= */
+/* GRID */
 
 #grid{
-
   position:absolute;
 
   left:10px;
@@ -248,30 +227,22 @@ header{
 @keyframes pulse{
 
   50%{
-
-    transform:
-      scale(1.2);
-
-    filter:
-      brightness(1.8);
+    transform:scale(1.2);
+    filter:brightness(1.8);
   }
 
 }
 
-/* =========================
-   COMBO
-========================= */
+/* COMBO */
 
 #combo{
 
   position:absolute;
 
-  top:66px;
+  top:67px;
 
   left:0;
   right:0;
-
-  height:30px;
 
   text-align:center;
 
@@ -287,9 +258,7 @@ header{
   z-index:10;
 }
 
-/* =========================
-   MESSAGE
-========================= */
+/* MESSAGE */
 
 #message{
 
@@ -311,9 +280,67 @@ header{
   z-index:10;
 }
 
-/* =========================
-   OVERLAY
-========================= */
+/* EVENT */
+
+#event{
+
+  position:absolute;
+
+  top:38%;
+
+  left:5%;
+  right:5%;
+
+  text-align:center;
+
+  font-size:28px;
+
+  font-weight:1000;
+
+  letter-spacing:2px;
+
+  text-shadow:
+    0 0 15px #fff,
+    0 0 35px #27d9ff;
+
+  opacity:0;
+
+  pointer-events:none;
+
+  z-index:50;
+}
+
+#event.show{
+
+  animation:
+    eventPop 1.5s ease;
+}
+
+@keyframes eventPop{
+
+  0%{
+    opacity:0;
+    transform:scale(.5);
+  }
+
+  20%{
+    opacity:1;
+    transform:scale(1.15);
+  }
+
+  70%{
+    opacity:1;
+    transform:scale(1);
+  }
+
+  100%{
+    opacity:0;
+    transform:scale(1.2);
+  }
+
+}
+
+/* OVERLAY */
 
 #overlay{
 
@@ -358,10 +385,6 @@ header{
   margin:5px;
 }
 
-/* =========================
-   LEVEL BUTTONS
-========================= */
-
 .levels{
 
   display:grid;
@@ -394,9 +417,6 @@ header{
   font-size:14px;
 
   cursor:pointer;
-
-  -webkit-tap-highlight-color:
-    transparent;
 }
 
 .levelButton small{
@@ -416,9 +436,7 @@ header{
     scale(.95);
 }
 
-/* =========================
-   FOOTER
-========================= */
+/* FOOTER */
 
 footer{
 
@@ -496,7 +514,7 @@ footer{
   </div>
 
 
-  <!-- ゲーム盤 -->
+  <!-- 盤面 -->
 
   <div id="grid"></div>
 
@@ -511,7 +529,12 @@ footer{
   <div id="message"></div>
 
 
-  <!-- スタート画面 -->
+  <!-- イベント表示 -->
+
+  <div id="event"></div>
+
+
+  <!-- スタート -->
 
   <div id="overlay">
 
@@ -533,7 +556,7 @@ footer{
         LEVEL 1
 
         <small>
-          ゆっくり
+          HARD
         </small>
 
       </button>
@@ -546,7 +569,7 @@ footer{
         LEVEL 2
 
         <small>
-          ふつう
+          VERY HARD
         </small>
 
       </button>
@@ -559,7 +582,7 @@ footer{
         LEVEL 3
 
         <small>
-          高速
+          EXTREME
         </small>
 
       </button>
@@ -597,10 +620,9 @@ footer{
 <script>
 
 /* ==================================================
-   NEON DROP
-   Version 4
+   NEON DROP v5
 
-   カメラ・マイクは使用していません。
+   カメラ・マイクは使用しません。
 ================================================== */
 
 "use strict";
@@ -625,67 +647,74 @@ const COLORS = [
 
 
 /*
-  LEVEL 1
-  LEVEL 2
-  LEVEL 3
-
-  数字が大きいほど
-  ゲージが速く減ります。
+  v5では
+  LEVEL 1から難易度を上げています。
 */
 
 const LEVELS = {
 
   1:{
     name:"LEVEL 1",
-    speed:0.0065
+    speed:0.010
   },
 
   2:{
     name:"LEVEL 2",
-    speed:0.0095
+    speed:0.014
   },
 
   3:{
     name:"LEVEL 3",
-    speed:0.014
+    speed:0.020
   }
 
 };
 
 
 /* =========================
-   GAME STATE
+   GAME VARIABLES
 ========================= */
 
-let board = [];
+let board=[];
 
-let score = 0;
+let score=0;
 
-let combo = 0;
+let totalScore=
+  Number(
+    localStorage.getItem(
+      "neon_total_score"
+    ) || 0
+  );
 
-let gauge = 100;
+let combo=0;
 
-let level = 1;
+let gauge=100;
 
-let running = false;
+let level=1;
 
-let busy = false;
+let running=false;
 
-let lastTime = 0;
+let busy=false;
+
+let fever=false;
+
+let rainbow=false;
+
+let lastTime=0;
 
 
 /* =========================
    SAVE DATA
 ========================= */
 
-let best =
+let best=
   Number(
     localStorage.getItem(
       "neon_best"
     ) || 0
   );
 
-let coins =
+let coins=
   Number(
     localStorage.getItem(
       "neon_coins"
@@ -697,52 +726,57 @@ let coins =
    ELEMENTS
 ========================= */
 
-const grid =
+const grid=
   document.getElementById(
     "grid"
   );
 
-const scoreElement =
+const scoreElement=
   document.getElementById(
     "score"
   );
 
-const bestElement =
+const bestElement=
   document.getElementById(
     "best"
   );
 
-const coinsElement =
+const coinsElement=
   document.getElementById(
     "coins"
   );
 
-const comboElement =
+const comboElement=
   document.getElementById(
     "combo"
   );
 
-const meterElement =
+const meterElement=
   document.getElementById(
     "meter"
   );
 
-const meterFill =
+const meterFill=
   document.getElementById(
     "meterFill"
   );
 
-const messageElement =
+const messageElement=
   document.getElementById(
     "message"
   );
 
-const overlay =
+const eventElement=
+  document.getElementById(
+    "event"
+  );
+
+const overlay=
   document.getElementById(
     "overlay"
   );
 
-const levelText =
+const levelText=
   document.getElementById(
     "levelText"
   );
@@ -752,24 +786,24 @@ const levelText =
    CREATE CELLS
 ========================= */
 
-const cells = [];
+const cells=[];
 
 
 for(
-  let i = 0;
-  i < COLS * ROWS;
+  let i=0;
+  i<COLS*ROWS;
   i++
 ){
 
-  const cell =
+  const cell=
     document.createElement(
       "div"
     );
 
-  cell.className =
+  cell.className=
     "cell";
 
-  cell.dataset.index =
+  cell.dataset.index=
     i;
 
   grid.appendChild(
@@ -781,17 +815,10 @@ for(
   );
 
 
-  /*
-    スマホでもPCでも
-    タップ可能
-  */
-
   cell.addEventListener(
     "pointerdown",
-    function(){
-
+    ()=>{
       tapCell(i);
-
     },
     {
       passive:true
@@ -805,15 +832,15 @@ for(
    LEVEL BUTTONS
 ========================= */
 
-document
-  .querySelectorAll(
-    ".levelButton"
-  )
-  .forEach(button=>{
+function setupLevelButtons(){
 
-    button.addEventListener(
-      "click",
-      function(){
+  document
+    .querySelectorAll(
+      ".levelButton"
+    )
+    .forEach(button=>{
+
+      button.onclick=()=>{
 
         startGame(
           Number(
@@ -821,14 +848,17 @@ document
           )
         );
 
-      }
-    );
+      };
 
-  });
+    });
+
+}
+
+setupLevelButtons();
 
 
 /* =========================
-   RANDOM COLOR
+   RANDOM
 ========================= */
 
 function randomColor(){
@@ -847,11 +877,11 @@ function randomColor(){
 
 function createBoard(){
 
-  board =
+  board=
     Array.from(
       {
         length:
-          COLS * ROWS
+          COLS*ROWS
       },
       randomColor
     );
@@ -873,15 +903,15 @@ function render(){
     i++
   ){
 
-    const cell =
+    const cell=
       cells[i];
 
-    cell.className =
+    cell.className=
       "cell";
 
 
     if(
-      board[i] !== null
+      board[i]!==null
     ){
 
       cell.classList.add(
@@ -900,35 +930,35 @@ function render(){
   }
 
 
-  scoreElement.textContent =
+  scoreElement.textContent=
     score;
 
-  bestElement.textContent =
+  bestElement.textContent=
     best;
 
-  coinsElement.textContent =
+  coinsElement.textContent=
     coins;
 
 
-  levelText.textContent =
+  levelText.textContent=
     running
       ? LEVELS[level].name
       : "LEVEL -";
 
 
-  meterFill.style.width =
+  meterFill.style.width=
     Math.max(
       0,
       Math.min(
         100,
         gauge
       )
-    ) + "%";
+    )+"%";
 
 
   meterElement.classList.toggle(
     "danger",
-    gauge < 25 &&
+    gauge<25 &&
     running
   );
 
@@ -941,51 +971,36 @@ function render(){
 
 function getNeighbors(index){
 
-  const x =
-    index % COLS;
+  const x=
+    index%COLS;
 
-  const y =
+  const y=
     Math.floor(
-      index / COLS
+      index/COLS
     );
 
-  const result = [];
+  const result=[];
 
 
-  if(x > 0){
-
+  if(x>0)
     result.push(
-      index - 1
+      index-1
     );
 
-  }
-
-
-  if(x < COLS - 1){
-
+  if(x<COLS-1)
     result.push(
-      index + 1
+      index+1
     );
 
-  }
-
-
-  if(y > 0){
-
+  if(y>0)
     result.push(
-      index - COLS
+      index-COLS
     );
 
-  }
-
-
-  if(y < ROWS - 1){
-
+  if(y<ROWS-1)
     result.push(
-      index + COLS
+      index+COLS
     );
-
-  }
 
 
   return result;
@@ -994,17 +1009,13 @@ function getNeighbors(index){
 
 
 /* =========================
-   FIND GROUP
+   GROUP
 ========================= */
 
 function getGroup(start){
 
-  /*
-    nullでは消さない
-  */
-
   if(
-    board[start] === null
+    board[start]===null
   ){
 
     return [];
@@ -1012,16 +1023,17 @@ function getGroup(start){
   }
 
 
-  const color =
+  const color=
     board[start];
 
-  const seen =
+  const seen=
     new Set([
       start
     ]);
 
-  const queue =
-    [start];
+  const queue=[
+    start
+  ];
 
 
   for(
@@ -1030,13 +1042,9 @@ function getGroup(start){
     i++
   ){
 
-    const current =
-      queue[i];
-
-
-    const neighbors =
+    const neighbors=
       getNeighbors(
-        current
+        queue[i]
       );
 
 
@@ -1046,17 +1054,13 @@ function getGroup(start){
     ){
 
       if(
-        !seen.has(next) &&
-        board[next] === color
+        !seen.has(next)&&
+        board[next]===color
       ){
 
-        seen.add(
-          next
-        );
+        seen.add(next);
 
-        queue.push(
-          next
-        );
+        queue.push(next);
 
       }
 
@@ -1071,13 +1075,245 @@ function getGroup(start){
 
 
 /* =========================
-   TAP CELL
+   EVENT
+========================= */
+
+function showEvent(
+  title,
+  duration=2000
+){
+
+  eventElement.textContent=
+    title;
+
+  eventElement.classList.remove(
+    "show"
+  );
+
+  void eventElement.offsetWidth;
+
+  eventElement.classList.add(
+    "show"
+  );
+
+
+  setTimeout(
+    ()=>{
+      eventElement.classList.remove(
+        "show"
+      );
+    },
+    duration
+  );
+
+}
+
+
+/* =========================
+   SCORE EVENTS
+========================= */
+
+function checkScoreEvents(){
+
+  /*
+    500
+  */
+
+  if(
+    totalScore>=500 &&
+    totalScore-500<
+    score
+  ){
+
+    showEvent(
+      "🎉 FIRST BONUS!"
+    );
+
+    gauge=
+      Math.min(
+        100,
+        gauge+25
+      );
+
+    coins+=10;
+
+  }
+
+
+  /*
+    1500
+  */
+
+  if(
+    totalScore>=1500 &&
+    totalScore-score<1500 &&
+    !fever
+  ){
+
+    startFever();
+
+  }
+
+
+  /*
+    3000
+  */
+
+  if(
+    totalScore>=3000 &&
+    totalScore-score<3000
+  ){
+
+    showEvent(
+      "💎 COIN RUSH!"
+    );
+
+    coins+=30;
+
+  }
+
+
+  /*
+    5000
+  */
+
+  if(
+    totalScore>=5000 &&
+    totalScore-score<5000 &&
+    !rainbow
+  ){
+
+    startRainbow();
+
+  }
+
+
+  /*
+    10000
+  */
+
+  if(
+    totalScore>=10000 &&
+    totalScore-score<10000
+  ){
+
+    showEvent(
+      "👑 NEON MASTER!"
+    );
+
+    gauge=100;
+
+    coins+=100;
+
+  }
+
+
+  /*
+    20000
+  */
+
+  if(
+    totalScore>=20000 &&
+    totalScore-score<20000
+  ){
+
+    startFever();
+
+    coins+=200;
+
+  }
+
+}
+
+
+/* =========================
+   FEVER
+========================= */
+
+function startFever(){
+
+  if(
+    fever
+  ){
+
+    return;
+
+  }
+
+
+  fever=true;
+
+  showEvent(
+    "⚡ FEVER TIME!"
+  );
+
+
+  gauge=
+    Math.min(
+      100,
+      gauge+30
+    );
+
+
+  messageElement.textContent=
+    "SCORE ×2";
+
+
+  setTimeout(
+    ()=>{
+      fever=false;
+      messageElement.textContent=
+        "";
+    },
+    7000
+  );
+
+}
+
+
+/* =========================
+   RAINBOW
+========================= */
+
+function startRainbow(){
+
+  if(
+    rainbow
+  ){
+
+    return;
+
+  }
+
+
+  rainbow=true;
+
+  showEvent(
+    "🌈 RAINBOW EVENT!"
+  );
+
+
+  gauge=100;
+
+
+  setTimeout(
+    ()=>{
+      rainbow=false;
+    },
+    5000
+  );
+
+}
+
+
+/* =========================
+   TAP
 ========================= */
 
 function tapCell(index){
 
   if(
-    !running ||
+    !running||
     busy
   ){
 
@@ -1086,19 +1322,16 @@ function tapCell(index){
   }
 
 
-  const group =
+  const group=
     getGroup(index);
 
 
   /*
-    ★重要★
-
-    1個だけでも
-    必ず消せる
+    1個でも消せる
   */
 
   if(
-    group.length === 0
+    group.length===0
   ){
 
     return;
@@ -1106,104 +1339,124 @@ function tapCell(index){
   }
 
 
-  busy = true;
+  busy=true;
 
-
-  /*
-    COMBO
-  */
 
   combo++;
 
 
   /*
     コンボ倍率
-
-    1回目 = ×1.0
-    2回目 = ×1.5
-    3回目 = ×2.0
-    ...
   */
 
-  const comboMultiplier =
-    1 +
-    (combo - 1) * 0.5;
+  let multiplier=
+    1+
+    (combo-1)*0.5;
 
 
   /*
-    大きなグループほど
-    ボーナス
+    FEVER
   */
 
-  const sizeBonus =
-    1 +
-    (group.length - 1)
-    * 0.8;
+  if(
+    fever
+  ){
+
+    multiplier*=2;
+
+  }
 
 
-  const gain =
+  /*
+    RAINBOW
+  */
+
+  if(
+    rainbow
+  ){
+
+    multiplier*=1.5;
+
+  }
+
+
+  /*
+    サイズボーナス
+  */
+
+  const sizeBonus=
+    1+
+    (group.length-1)
+    *0.8;
+
+
+  const gain=
     Math.max(
       10,
       Math.floor(
-        group.length *
-        10 *
-        sizeBonus *
-        comboMultiplier
+        group.length*
+        10*
+        sizeBonus*
+        multiplier
       )
     );
 
 
-  score += gain;
+  score+=gain;
+
+  totalScore+=gain;
 
 
   /*
     コイン
   */
 
-  coins +=
+  coins+=
     Math.max(
       1,
       Math.floor(
-        group.length / 2
+        group.length/2
       )
     );
 
 
   /*
     ゲージ回復
-
-    大きなグループほど
-    多く回復
   */
 
-  gauge =
+  gauge=
     Math.min(
       100,
-      gauge +
-      18 +
-      group.length * 5
+      gauge+
+      16+
+      group.length*4
     );
 
 
-  comboElement.textContent =
-    "🔥 " +
-    combo +
-    " COMBO ×" +
-    comboMultiplier.toFixed(1);
+  /*
+    コンボ表示
+  */
+
+  comboElement.textContent=
+    "🔥 "+
+    combo+
+    " COMBO ×"+
+    multiplier.toFixed(1);
 
 
-  messageElement.textContent =
-    "+" + gain;
+  messageElement.textContent=
+    "+"+
+    gain;
 
 
   /*
-    ブロックを消す
+    消す
   */
 
   group.forEach(
     index=>{
 
-      board[index] =
+      board[index]=
         null;
 
       cells[index]
@@ -1216,12 +1469,33 @@ function tapCell(index){
 
 
   /*
-    少し演出してから
+    イベント確認
+  */
+
+  checkScoreEvents();
+
+
+  /*
+    保存
+  */
+
+  localStorage.setItem(
+    "neon_total_score",
+    String(totalScore)
+  );
+
+  localStorage.setItem(
+    "neon_coins",
+    String(coins)
+  );
+
+
+  /*
     落下
   */
 
   setTimeout(
-    function(){
+    ()=>{
 
       dropBlocks();
 
@@ -1229,7 +1503,7 @@ function tapCell(index){
 
       render();
 
-      busy = false;
+      busy=false;
 
     },
     150
@@ -1239,7 +1513,7 @@ function tapCell(index){
 
 
 /* =========================
-   DROP BLOCKS
+   DROP
 ========================= */
 
 function dropBlocks(){
@@ -1250,13 +1524,8 @@ function dropBlocks(){
     x++
   ){
 
-    const values = [];
+    const values=[];
 
-
-    /*
-      下から
-      ブロックを回収
-    */
 
     for(
       let y=ROWS-1;
@@ -1264,14 +1533,14 @@ function dropBlocks(){
       y--
     ){
 
-      const value =
+      const value=
         board[
-          y * COLS + x
+          y*COLS+x
         ];
 
 
       if(
-        value !== null
+        value!==null
       ){
 
         values.push(
@@ -1283,35 +1552,30 @@ function dropBlocks(){
     }
 
 
-    /*
-      下から配置
-    */
-
     for(
       let y=ROWS-1;
       y>=0;
       y--
     ){
 
-      const index =
-        y * COLS + x;
+      const index=
+        y*COLS+x;
 
 
       if(
-        ROWS - 1 - y
-        <
+        ROWS-1-y<
         values.length
       ){
 
-        board[index] =
+        board[index]=
           values[
-            ROWS - 1 - y
+            ROWS-1-y
           ];
 
       }
       else{
 
-        board[index] =
+        board[index]=
           null;
 
       }
@@ -1341,15 +1605,15 @@ function refillBlocks(){
       y++
     ){
 
-      const index =
-        y * COLS + x;
+      const index=
+        y*COLS+x;
 
 
       if(
-        board[index] === null
+        board[index]===null
       ){
 
-        board[index] =
+        board[index]=
           randomColor();
 
       }
@@ -1362,38 +1626,42 @@ function refillBlocks(){
 
 
 /* =========================
-   START GAME
+   START
 ========================= */
 
 function startGame(
   selectedLevel
 ){
 
-  level =
+  level=
     selectedLevel;
 
-  score = 0;
+  score=0;
 
-  combo = 0;
+  combo=0;
 
-  gauge = 100;
+  gauge=100;
 
-  running = true;
+  running=true;
 
-  busy = false;
+  busy=false;
 
-  lastTime = 0;
+  fever=false;
+
+  rainbow=false;
+
+  lastTime=0;
 
 
-  comboElement.textContent =
+  comboElement.textContent=
     "";
 
-  messageElement.textContent =
-    LEVELS[level].name +
+  messageElement.textContent=
+    LEVELS[level].name+
     " START!";
 
 
-  overlay.style.display =
+  overlay.style.display=
     "none";
 
 
@@ -1408,22 +1676,26 @@ function startGame(
 
 function gameOver(){
 
-  running = false;
+  running=false;
 
-  busy = false;
+  busy=false;
 
-  gauge = 0;
+  fever=false;
+
+  rainbow=false;
+
+  gauge=0;
 
 
   /*
-    BEST更新
+    BEST
   */
 
   if(
-    score > best
+    score>best
   ){
 
-    best = score;
+    best=score;
 
     localStorage.setItem(
       "neon_best",
@@ -1439,11 +1711,17 @@ function gameOver(){
   );
 
 
+  localStorage.setItem(
+    "neon_total_score",
+    String(totalScore)
+  );
+
+
   /*
     ゲームオーバー画面
   */
 
-  overlay.innerHTML = `
+  overlay.innerHTML=`
 
     <h1>
       TIME<br>
@@ -1468,6 +1746,13 @@ function gameOver(){
       </b>
     </p>
 
+    <p>
+      TOTAL　
+      <b>
+        ${totalScore}
+      </b>
+    </p>
+
     <div class="levels">
 
       <button
@@ -1477,10 +1762,11 @@ function gameOver(){
         LEVEL 1
 
         <small>
-          ゆっくり
+          HARD
         </small>
 
       </button>
+
 
       <button
         class="levelButton"
@@ -1489,10 +1775,11 @@ function gameOver(){
         LEVEL 2
 
         <small>
-          ふつう
+          VERY HARD
         </small>
 
       </button>
+
 
       <button
         class="levelButton"
@@ -1501,7 +1788,7 @@ function gameOver(){
         LEVEL 3
 
         <small>
-          高速
+          EXTREME
         </small>
 
       </button>
@@ -1511,35 +1798,11 @@ function gameOver(){
   `;
 
 
-  overlay.style.display =
+  overlay.style.display=
     "flex";
 
 
-  /*
-    新しいボタンにも
-    イベントを設定
-  */
-
-  overlay
-    .querySelectorAll(
-      ".levelButton"
-    )
-    .forEach(button=>{
-
-      button.addEventListener(
-        "click",
-        function(){
-
-          startGame(
-            Number(
-              button.dataset.level
-            )
-          );
-
-        }
-      );
-
-    });
+  setupLevelButtons();
 
 }
 
@@ -1554,20 +1817,20 @@ function gameLoop(time){
     !lastTime
   ){
 
-    lastTime =
+    lastTime=
       time;
 
   }
 
 
-  const delta =
+  const delta=
     Math.min(
       100,
-      time - lastTime
+      time-lastTime
     );
 
 
-  lastTime =
+  lastTime=
     time;
 
 
@@ -1577,25 +1840,36 @@ function gameLoop(time){
   ){
 
     /*
-      ゲージ減少
+      FEVER中は
+      ゲージ減少を半分にする
     */
 
-    gauge -=
-      delta *
+    let drain=
       LEVELS[level].speed;
+
+
+    if(
+      fever
+    ){
+
+      drain*=0.5;
+
+    }
+
+
+    gauge-=
+      delta*drain;
 
 
     /*
       ゲージ0
-      ↓
-      即ゲームオーバー
     */
 
     if(
-      gauge <= 0
+      gauge<=0
     ){
 
-      gauge = 0;
+      gauge=0;
 
       render();
 
@@ -1623,13 +1897,13 @@ function gameLoop(time){
 
 
 /* =========================
-   START
+   INITIALIZE
 ========================= */
 
-bestElement.textContent =
+bestElement.textContent=
   best;
 
-coinsElement.textContent =
+coinsElement.textContent=
   coins;
 
 render();
