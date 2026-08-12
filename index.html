@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1,
+maximum-scale=1,
+user-scalable=no">
+
+<meta name="theme-color" content="#070914">
+
+<title>NEON DROP</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#070914;
+  color:white;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+body{
+  touch-action:manipulation;
+}
+
+#app{
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+  width:min(94vw,480px);
+  height:70px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.title{
+  font-size:21px;
+  font-weight:900;
+  letter-spacing:3px;
+}
+
+.scoreBox{
+  text-align:right;
+}
+
+.label{
+  font-size:10px;
+  color:#8e98c2;
+  letter-spacing:1px;
+}
+
+#score{
+  font-size:25px;
+  font-weight:900;
+}
+
+/* =========================
+   GAME
+========================= */
+
+#game{
+  position:relative;
+
+  width:min(94vw,480px);
+  height:min(79vh,690px);
+
+  border:1px solid #303653;
+  border-radius:22px;
+
+  background:#0a0e20;
+
+  box-shadow:
+    0 12px 40px rgba(0,0,0,.5);
+
+  overflow:hidden;
+}
+
+/* =========================
+   TIME GAUGE
+========================= */
+
+#meterArea{
+
+  position:absolute;
+
+  top:10px;
+  left:14px;
+  right:14px;
+
+  height:40px;
+
+  z-index:20;
+}
+
+#meterLabel{
+
+  font-size:10px;
+
+  color:#9fa9ce;
+
+  font-weight:800;
+
+  letter-spacing:1px;
+
+  margin-bottom:4px;
+}
+
+#meter{
+
+  width:100%;
+  height:12px;
+
+  background:#171d35;
+
+  border:1px solid #303653;
+
+  border-radius:999px;
+
+  overflow:hidden;
+}
+
+#meterFill{
+
+  width:100%;
+  height:100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      #27d9ff,
+      #8b5cf6,
+      #ff4f9a
+    );
+
+  transition:
+    width .08s linear;
+}
+
+#meter.danger #meterFill{
+
+  background:#ff3f67;
+
+  box-shadow:
+    0 0 12px #ff3f67;
+
+  animation:
+    danger .45s infinite alternate;
+}
+
+@keyframes danger{
+
+  from{
+    filter:brightness(1);
+  }
+
+  to{
+    filter:brightness(1.8);
+  }
+
+}
+
+/* =========================
+   GRID
+========================= */
+
+#grid{
+
+  position:absolute;
+
+  left:10px;
+  right:10px;
+
+  top:62px;
+  bottom:10px;
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(6,1fr);
+
+  grid-template-rows:
+    repeat(10,1fr);
+
+  gap:6px;
+}
+
+.cell{
+
+  min-width:0;
+  min-height:0;
+
+  border-radius:9px;
+
+  background:#11172a;
+
+  border:
+    1px solid #1c2542;
+
+  transition:
+    transform .08s;
+}
+
+.cell.filled{
+
+  background:var(--color);
+
+  border-color:
+    rgba(255,255,255,.55);
+
+  box-shadow:
+    0 0 13px var(--color),
+    inset 0 0 9px
+    rgba(255,255,255,.3);
+}
+
+.cell.pulse{
+
+  animation:
+    pulse .16s ease;
+}
+
+@keyframes pulse{
+
+  50%{
+
+    transform:
+      scale(1.2);
+
+    filter:
+      brightness(1.8);
+  }
+
+}
+
+/* =========================
+   COMBO
+========================= */
+
+#combo{
+
+  position:absolute;
+
+  top:66px;
+
+  left:0;
+  right:0;
+
+  height:30px;
+
+  text-align:center;
+
+  font-size:21px;
+
+  font-weight:900;
+
+  text-shadow:
+    0 0 15px #31ddff;
+
+  pointer-events:none;
+
+  z-index:10;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+#message{
+
+  position:absolute;
+
+  left:0;
+  right:0;
+
+  bottom:15px;
+
+  text-align:center;
+
+  color:#aeb7dc;
+
+  font-weight:700;
+
+  pointer-events:none;
+
+  z-index:10;
+}
+
+/* =========================
+   OVERLAY
+========================= */
+
+#overlay{
+
+  position:absolute;
+
+  inset:0;
+
+  z-index:100;
+
+  background:
+    rgba(5,7,19,.96);
+
+  display:flex;
+
+  flex-direction:column;
+
+  justify-content:center;
+
+  align-items:center;
+
+  text-align:center;
+
+  padding:20px;
+}
+
+#overlay h1{
+
+  font-size:42px;
+
+  line-height:.95;
+
+  letter-spacing:5px;
+
+  margin:
+    0 0 18px;
+}
+
+#overlay p{
+
+  color:#aeb7dc;
+
+  margin:5px;
+}
+
+/* =========================
+   LEVEL BUTTONS
+========================= */
+
+.levels{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap:10px;
+
+  width:min(90%,330px);
+
+  margin-top:18px;
+}
+
+.levelButton{
+
+  border:
+    1px solid #303653;
+
+  border-radius:15px;
+
+  background:#11172a;
+
+  color:white;
+
+  padding:14px 7px;
+
+  font-weight:900;
+
+  font-size:14px;
+
+  cursor:pointer;
+
+  -webkit-tap-highlight-color:
+    transparent;
+}
+
+.levelButton small{
+
+  display:block;
+
+  margin-top:5px;
+
+  color:#aeb7dc;
+
+  font-weight:500;
+}
+
+.levelButton:active{
+
+  transform:
+    scale(.95);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+
+  width:min(94vw,480px);
+
+  height:65px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  color:#9ca6ca;
+
+  font-size:12px;
+}
+
+.badge{
+
+  border:
+    1px solid #303653;
+
+  background:#0d1224;
+
+  border-radius:999px;
+
+  padding:8px 12px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<header>
+
+  <div class="title">
+    NEON DROP
+  </div>
+
+  <div class="scoreBox">
+
+    <div class="label">
+      SCORE
+    </div>
+
+    <div id="score">
+      0
+    </div>
+
+  </div>
+
+</header>
+
+
+<div id="game">
+
+  <!-- ゲージ -->
+
+  <div id="meterArea">
+
+    <div id="meterLabel">
+      TIME GAUGE
+    </div>
+
+    <div id="meter">
+
+      <div id="meterFill"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ゲーム盤 -->
+
+  <div id="grid"></div>
+
+
+  <!-- コンボ -->
+
+  <div id="combo"></div>
+
+
+  <!-- メッセージ -->
+
+  <div id="message"></div>
+
+
+  <!-- スタート画面 -->
+
+  <div id="overlay">
+
+    <h1>
+      NEON<br>
+      DROP
+    </h1>
+
+    <p>
+      レベルを選んでスタート
+    </p>
+
+    <div class="levels">
+
+      <button
+        class="levelButton"
+        data-level="1">
+
+        LEVEL 1
+
+        <small>
+          ゆっくり
+        </small>
+
+      </button>
+
+
+      <button
+        class="levelButton"
+        data-level="2">
+
+        LEVEL 2
+
+        <small>
+          ふつう
+        </small>
+
+      </button>
+
+
+      <button
+        class="levelButton"
+        data-level="3">
+
+        LEVEL 3
+
+        <small>
+          高速
+        </small>
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<footer>
+
+  <div class="badge">
+
+    🏆 BEST
+    <b id="best">0</b>
+
+  </div>
+
+  <div id="levelText">
+    LEVEL -
+  </div>
+
+  <div class="badge">
+
+    🪙
+    <b id="coins">0</b>
+
+  </div>
+
+</footer>
+
+
+<script>
+
+/* ==================================================
+   NEON DROP
+   Version 4
+
+   カメラ・マイクは使用していません。
+================================================== */
+
+"use strict";
+
+
+/* =========================
+   SETTINGS
+========================= */
+
+const COLS = 6;
+const ROWS = 10;
+
+const COLORS = [
+
+  "#27d9ff",
+  "#8b5cf6",
+  "#ff4f9a",
+  "#ffb52e",
+  "#45ef8b"
+
+];
+
+
+/*
+  LEVEL 1
+  LEVEL 2
+  LEVEL 3
+
+  数字が大きいほど
+  ゲージが速く減ります。
+*/
+
+const LEVELS = {
+
+  1:{
+    name:"LEVEL 1",
+    speed:0.0065
+  },
+
+  2:{
+    name:"LEVEL 2",
+    speed:0.0095
+  },
+
+  3:{
+    name:"LEVEL 3",
+    speed:0.014
+  }
+
+};
+
+
+/* =========================
+   GAME STATE
+========================= */
+
+let board = [];
+
+let score = 0;
+
+let combo = 0;
+
+let gauge = 100;
+
+let level = 1;
+
+let running = false;
+
+let busy = false;
+
+let lastTime = 0;
+
+
+/* =========================
+   SAVE DATA
+========================= */
+
+let best =
+  Number(
+    localStorage.getItem(
+      "neon_best"
+    ) || 0
+  );
+
+let coins =
+  Number(
+    localStorage.getItem(
+      "neon_coins"
+    ) || 0
+  );
+
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const grid =
+  document.getElementById(
+    "grid"
+  );
+
+const scoreElement =
+  document.getElementById(
+    "score"
+  );
+
+const bestElement =
+  document.getElementById(
+    "best"
+  );
+
+const coinsElement =
+  document.getElementById(
+    "coins"
+  );
+
+const comboElement =
+  document.getElementById(
+    "combo"
+  );
+
+const meterElement =
+  document.getElementById(
+    "meter"
+  );
+
+const meterFill =
+  document.getElementById(
+    "meterFill"
+  );
+
+const messageElement =
+  document.getElementById(
+    "message"
+  );
+
+const overlay =
+  document.getElementById(
+    "overlay"
+  );
+
+const levelText =
+  document.getElementById(
+    "levelText"
+  );
+
+
+/* =========================
+   CREATE CELLS
+========================= */
+
+const cells = [];
+
+
+for(
+  let i = 0;
+  i < COLS * ROWS;
+  i++
+){
+
+  const cell =
+    document.createElement(
+      "div"
+    );
+
+  cell.className =
+    "cell";
+
+  cell.dataset.index =
+    i;
+
+  grid.appendChild(
+    cell
+  );
+
+  cells.push(
+    cell
+  );
+
+
+  /*
+    スマホでもPCでも
+    タップ可能
+  */
+
+  cell.addEventListener(
+    "pointerdown",
+    function(){
+
+      tapCell(i);
+
+    },
+    {
+      passive:true
+    }
+  );
+
+}
+
+
+/* =========================
+   LEVEL BUTTONS
+========================= */
+
+document
+  .querySelectorAll(
+    ".levelButton"
+  )
+  .forEach(button=>{
+
+    button.addEventListener(
+      "click",
+      function(){
+
+        startGame(
+          Number(
+            button.dataset.level
+          )
+        );
+
+      }
+    );
+
+  });
+
+
+/* =========================
+   RANDOM COLOR
+========================= */
+
+function randomColor(){
+
+  return Math.floor(
+    Math.random()
+    * COLORS.length
+  );
+
+}
+
+
+/* =========================
+   CREATE BOARD
+========================= */
+
+function createBoard(){
+
+  board =
+    Array.from(
+      {
+        length:
+          COLS * ROWS
+      },
+      randomColor
+    );
+
+  render();
+
+}
+
+
+/* =========================
+   RENDER
+========================= */
+
+function render(){
+
+  for(
+    let i=0;
+    i<board.length;
+    i++
+  ){
+
+    const cell =
+      cells[i];
+
+    cell.className =
+      "cell";
+
+
+    if(
+      board[i] !== null
+    ){
+
+      cell.classList.add(
+        "filled"
+      );
+
+      cell.style.setProperty(
+        "--color",
+        COLORS[
+          board[i]
+        ]
+      );
+
+    }
+
+  }
+
+
+  scoreElement.textContent =
+    score;
+
+  bestElement.textContent =
+    best;
+
+  coinsElement.textContent =
+    coins;
+
+
+  levelText.textContent =
+    running
+      ? LEVELS[level].name
+      : "LEVEL -";
+
+
+  meterFill.style.width =
+    Math.max(
+      0,
+      Math.min(
+        100,
+        gauge
+      )
+    ) + "%";
+
+
+  meterElement.classList.toggle(
+    "danger",
+    gauge < 25 &&
+    running
+  );
+
+}
+
+
+/* =========================
+   NEIGHBORS
+========================= */
+
+function getNeighbors(index){
+
+  const x =
+    index % COLS;
+
+  const y =
+    Math.floor(
+      index / COLS
+    );
+
+  const result = [];
+
+
+  if(x > 0){
+
+    result.push(
+      index - 1
+    );
+
+  }
+
+
+  if(x < COLS - 1){
+
+    result.push(
+      index + 1
+    );
+
+  }
+
+
+  if(y > 0){
+
+    result.push(
+      index - COLS
+    );
+
+  }
+
+
+  if(y < ROWS - 1){
+
+    result.push(
+      index + COLS
+    );
+
+  }
+
+
+  return result;
+
+}
+
+
+/* =========================
+   FIND GROUP
+========================= */
+
+function getGroup(start){
+
+  /*
+    nullでは消さない
+  */
+
+  if(
+    board[start] === null
+  ){
+
+    return [];
+
+  }
+
+
+  const color =
+    board[start];
+
+  const seen =
+    new Set([
+      start
+    ]);
+
+  const queue =
+    [start];
+
+
+  for(
+    let i=0;
+    i<queue.length;
+    i++
+  ){
+
+    const current =
+      queue[i];
+
+
+    const neighbors =
+      getNeighbors(
+        current
+      );
+
+
+    for(
+      const next
+      of neighbors
+    ){
+
+      if(
+        !seen.has(next) &&
+        board[next] === color
+      ){
+
+        seen.add(
+          next
+        );
+
+        queue.push(
+          next
+        );
+
+      }
+
+    }
+
+  }
+
+
+  return queue;
+
+}
+
+
+/* =========================
+   TAP CELL
+========================= */
+
+function tapCell(index){
+
+  if(
+    !running ||
+    busy
+  ){
+
+    return;
+
+  }
+
+
+  const group =
+    getGroup(index);
+
+
+  /*
+    ★重要★
+
+    1個だけでも
+    必ず消せる
+  */
+
+  if(
+    group.length === 0
+  ){
+
+    return;
+
+  }
+
+
+  busy = true;
+
+
+  /*
+    COMBO
+  */
+
+  combo++;
+
+
+  /*
+    コンボ倍率
+
+    1回目 = ×1.0
+    2回目 = ×1.5
+    3回目 = ×2.0
+    ...
+  */
+
+  const comboMultiplier =
+    1 +
+    (combo - 1) * 0.5;
+
+
+  /*
+    大きなグループほど
+    ボーナス
+  */
+
+  const sizeBonus =
+    1 +
+    (group.length - 1)
+    * 0.8;
+
+
+  const gain =
+    Math.max(
+      10,
+      Math.floor(
+        group.length *
+        10 *
+        sizeBonus *
+        comboMultiplier
+      )
+    );
+
+
+  score += gain;
+
+
+  /*
+    コイン
+  */
+
+  coins +=
+    Math.max(
+      1,
+      Math.floor(
+        group.length / 2
+      )
+    );
+
+
+  /*
+    ゲージ回復
+
+    大きなグループほど
+    多く回復
+  */
+
+  gauge =
+    Math.min(
+      100,
+      gauge +
+      18 +
+      group.length * 5
+    );
+
+
+  comboElement.textContent =
+    "🔥 " +
+    combo +
+    " COMBO ×" +
+    comboMultiplier.toFixed(1);
+
+
+  messageElement.textContent =
+    "+" + gain;
+
+
+  /*
+    ブロックを消す
+  */
+
+  group.forEach(
+    index=>{
+
+      board[index] =
+        null;
+
+      cells[index]
+        .classList.add(
+          "pulse"
+        );
+
+    }
+  );
+
+
+  /*
+    少し演出してから
+    落下
+  */
+
+  setTimeout(
+    function(){
+
+      dropBlocks();
+
+      refillBlocks();
+
+      render();
+
+      busy = false;
+
+    },
+    150
+  );
+
+}
+
+
+/* =========================
+   DROP BLOCKS
+========================= */
+
+function dropBlocks(){
+
+  for(
+    let x=0;
+    x<COLS;
+    x++
+  ){
+
+    const values = [];
+
+
+    /*
+      下から
+      ブロックを回収
+    */
+
+    for(
+      let y=ROWS-1;
+      y>=0;
+      y--
+    ){
+
+      const value =
+        board[
+          y * COLS + x
+        ];
+
+
+      if(
+        value !== null
+      ){
+
+        values.push(
+          value
+        );
+
+      }
+
+    }
+
+
+    /*
+      下から配置
+    */
+
+    for(
+      let y=ROWS-1;
+      y>=0;
+      y--
+    ){
+
+      const index =
+        y * COLS + x;
+
+
+      if(
+        ROWS - 1 - y
+        <
+        values.length
+      ){
+
+        board[index] =
+          values[
+            ROWS - 1 - y
+          ];
+
+      }
+      else{
+
+        board[index] =
+          null;
+
+      }
+
+    }
+
+  }
+
+}
+
+
+/* =========================
+   REFILL
+========================= */
+
+function refillBlocks(){
+
+  for(
+    let x=0;
+    x<COLS;
+    x++
+  ){
+
+    for(
+      let y=0;
+      y<ROWS;
+      y++
+    ){
+
+      const index =
+        y * COLS + x;
+
+
+      if(
+        board[index] === null
+      ){
+
+        board[index] =
+          randomColor();
+
+      }
+
+    }
+
+  }
+
+}
+
+
+/* =========================
+   START GAME
+========================= */
+
+function startGame(
+  selectedLevel
+){
+
+  level =
+    selectedLevel;
+
+  score = 0;
+
+  combo = 0;
+
+  gauge = 100;
+
+  running = true;
+
+  busy = false;
+
+  lastTime = 0;
+
+
+  comboElement.textContent =
+    "";
+
+  messageElement.textContent =
+    LEVELS[level].name +
+    " START!";
+
+
+  overlay.style.display =
+    "none";
+
+
+  createBoard();
+
+}
+
+
+/* =========================
+   GAME OVER
+========================= */
+
+function gameOver(){
+
+  running = false;
+
+  busy = false;
+
+  gauge = 0;
+
+
+  /*
+    BEST更新
+  */
+
+  if(
+    score > best
+  ){
+
+    best = score;
+
+    localStorage.setItem(
+      "neon_best",
+      String(best)
+    );
+
+  }
+
+
+  localStorage.setItem(
+    "neon_coins",
+    String(coins)
+  );
+
+
+  /*
+    ゲームオーバー画面
+  */
+
+  overlay.innerHTML = `
+
+    <h1>
+      TIME<br>
+      UP
+    </h1>
+
+    <p>
+      ${LEVELS[level].name}
+    </p>
+
+    <p>
+      SCORE　
+      <b>
+        ${score}
+      </b>
+    </p>
+
+    <p>
+      BEST　
+      <b>
+        ${best}
+      </b>
+    </p>
+
+    <div class="levels">
+
+      <button
+        class="levelButton"
+        data-level="1">
+
+        LEVEL 1
+
+        <small>
+          ゆっくり
+        </small>
+
+      </button>
+
+      <button
+        class="levelButton"
+        data-level="2">
+
+        LEVEL 2
+
+        <small>
+          ふつう
+        </small>
+
+      </button>
+
+      <button
+        class="levelButton"
+        data-level="3">
+
+        LEVEL 3
+
+        <small>
+          高速
+        </small>
+
+      </button>
+
+    </div>
+
+  `;
+
+
+  overlay.style.display =
+    "flex";
+
+
+  /*
+    新しいボタンにも
+    イベントを設定
+  */
+
+  overlay
+    .querySelectorAll(
+      ".levelButton"
+    )
+    .forEach(button=>{
+
+      button.addEventListener(
+        "click",
+        function(){
+
+          startGame(
+            Number(
+              button.dataset.level
+            )
+          );
+
+        }
+      );
+
+    });
+
+}
+
+
+/* =========================
+   GAME LOOP
+========================= */
+
+function gameLoop(time){
+
+  if(
+    !lastTime
+  ){
+
+    lastTime =
+      time;
+
+  }
+
+
+  const delta =
+    Math.min(
+      100,
+      time - lastTime
+    );
+
+
+  lastTime =
+    time;
+
+
+  if(
+    running &&
+    !busy
+  ){
+
+    /*
+      ゲージ減少
+    */
+
+    gauge -=
+      delta *
+      LEVELS[level].speed;
+
+
+    /*
+      ゲージ0
+      ↓
+      即ゲームオーバー
+    */
+
+    if(
+      gauge <= 0
+    ){
+
+      gauge = 0;
+
+      render();
+
+      gameOver();
+
+      requestAnimationFrame(
+        gameLoop
+      );
+
+      return;
+
+    }
+
+
+    render();
+
+  }
+
+
+  requestAnimationFrame(
+    gameLoop
+  );
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+bestElement.textContent =
+  best;
+
+coinsElement.textContent =
+  coins;
+
+render();
+
+requestAnimationFrame(
+  gameLoop
+);
+
+</script>
+
+</body>
+</html>
